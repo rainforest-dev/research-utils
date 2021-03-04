@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "research-utils"
+version = "0.1.0"
+description = "some utils for my research"
+authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sqlite-utils = "^3.6"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
