@@ -1,0 +1,188 @@
+#------------------------------------------------------------
+# tensiletest.in
+# LAMMPS input file for 2D axial tensile test simulation
+#
+# Yuan Chiang, b04501018@ntu.edu.tw
+# 	9th/Jan/2020	|	create this file
+# 	12th/Jan/2020	|	remove "create notch" and create notch in model inherently
+# 	8th/Jun/2020	|	changes made for LSTM model
+# 	9th/Jul/2020	|	append strain after dump file name 
+#------------------------------------------------------------
+
+variable		rootname index ${r}		##### rootname of data file
+
+variable		lb equal 100
+
+variable		erate equal 1e-7				##### strain rate (pseudo)
+variable		efinal equal 0.1				##### final strain
+
+variable		nmin equal round(${efinal}/${erate}/100)
+variable		nbrk equal round(${nmin}/1000)
+
+variable		dt equal 1
+
+variable		runtime equal round(${efinal}/(${erate}*${dt}))
+
+variable		nthm equal round(${efinal}/${erate}/1e3)
+variable		ndmp equal 10*${nthm}
+variable		nrst equal 10*${ndmp}
+
+#============================================================#
+# INITIALIZE LAMMPS
+#============================================================#
+
+units			real
+dimension		2
+boundary		s s p
+atom_style		bond
+
+#============================================================#
+# CREATE INITIAL GEOMETRY
+#============================================================#
+
+read_data		${basedir}/${rootname}.data extra/bond/per/atom 6 extra/special/per/atom 6
+
+# notch - delete atoms
+
+#region			notch block 12550 13050 INF 3400 INF INF units box
+#delete_atoms	region notch compress yes bond yes
+
+# create bonds
+group			stiff type 1
+group			soft type 2
+
+pair_style		zero ${lb} nocoeff
+pair_coeff		* *
+neighbor		${lb} bin
+
+create_bonds	many stiff stiff 1 $(v_lb-10) $(v_lb+10)
+create_bonds	many soft soft 2 $(v_lb-10) $(v_lb+10)
+create_bonds	many stiff soft 3 $(v_lb-10) $(v_lb+10)
+
+# define boundary
+region			left block INF 0 INF INF INF INF units box
+group			left region left
+region			right block 25600 INF INF INF INF INF units box
+group			right region right
+
+group			mobile subtract all left right
+
+variable		mleft equal bound(left,xmax)
+variable		mright equal bound(right,xmin)
+
+#============================================================#
+# FORCE FIELD
+#============================================================#
+
+pair_style		zero ${lb} nocoeff
+pair_coeff		* *
+
+bond_style		harmonic
+bond_coeff		1 1.00 ${lb}						##### twice of the stiff spring stiffness
+bond_coeff		2 0.01 ${lb}						##### twice of the soft spring stiffness
+bond_coeff		3 0.0625 ${lb}						##### twice of the interface spring stiffness
+
+neighbor		${lb} nsq
+neigh_modify	delay 10
+comm_modify		cutoff $(100*v_lb)
+
+fix				b1 all bond/break ${nbrk} 1 101		##### critical stretch of stiff springs
+fix				b2 all bond/break ${nbrk} 2 110		##### critical stretch of soft springs
+fix				b3 all bond/break ${nbrk} 3 104		##### critical stretch of interface springs
+
+fix				0 all enforce2d
+
+#============================================================#
+# CALCULATION
+#============================================================#
+
+# potential energy
+
+compute			peatom all pe/atom bond
+
+# stress and strain
+
+compute			stressatom all stress/atom NULL
+compute			sta mobile reduce sum c_stressatom[*]
+
+variable		l equal v_mright-v_mleft
+variable		l0 equal ${l}
+
+variable		w equal ly
+variable		w0 equal ${w}
+
+variable		sxx equal c_sta[1]/(v_l*v_w0*lz)
+variable		exx equal "(v_l - v_l0)/v_l0" # engineering strain
+
+variable		bigexx equal round(v_exx*1000)
+variable		dumpindex format bigexx %.0f
+
+# bond
+
+compute			ba all property/local batom1 batom2 btype
+compute			bp all bond/local dist engpot
+
+
+#============================================================#
+# SIMULATION
+#============================================================#
+
+# boundary condition
+fix				lb left setforce 0.0 0.0 0.0
+fix				rb right setforce 0.0 0.0 0.0
+
+variable		Flb equal -f_lb[1]
+variable		Frb equal -f_rb[1]
+
+# time integration settings
+timestep		${dt}	# femtosecond
+
+# thermo
+fix				nve mobile nve
+
+thermo			${nthm}
+thermo_style	custom step time temp etotal pe ke ebond pxx pyy lx ly v_exx v_sxx f_lb[1] f_rb[1]
+
+# restart
+shell       mkdir ${basedir}/restart
+restart			${nrst} ${basedir}/restart/restart.*
+
+
+
+variable		n equal round(${runtime}/${nmin})
+variable		i loop $n
+
+
+
+variable		ts equal step
+fix				ss all print ${nthm} "${ts}    ${exx}    ${sxx}    ${Flb}    ${Frb}" append ss.txt screen no title "step    exx    sxx    Flb    Frb"
+
+# load-minimization loop
+
+label			loop
+
+min_style		cg
+min_modify		dmax $(v_lb/10.0)
+minimize		1.0e-4 1.0e-6 1000 100000
+
+# dump
+shell     mkdir ${basedir}/dump
+dump			atom all custom ${ndmp} ${basedir}/dump/atom.dump.${dumpindex} id type x y c_peatom c_stressatom[1] c_stressatom[2] c_stressatom[4]
+dump_modify		atom first yes
+dump			bond mobile local ${ndmp} ${basedir}/dump/bond.dump.${dumpindex} index c_ba[*] c_bp[*]
+dump_modify		bond first yes
+
+fix				ml left move linear $(-v_erate/2.0*v_l0) 0 0 units box
+fix				mr right move linear $(v_erate/2.0*v_l0) 0 0 units box
+
+run				${nmin}
+
+undump			atom
+undump			bond
+
+unfix			ml
+unfix			mr
+
+next			i
+jump			${basedir}/in.tensiletest loop
+

@@ -5,9 +5,11 @@ description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7.1"
 sqlite-utils = "^3.6"
 pytorch-lightning = "^1.2.2"
+tensorboard = "^2.5.0"
+matplotlib = "^3.4.2"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.5"

@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+research_utils/lammps/img2particle/*.PNG
+research_utils/lammps/img2particle/*.data
+research_utils/lammps/img2particle/*.jpg
+
+research_utils/lammps/restart/
+
+research_utils/lammps/dump/
+
+ss.txt
+
+log.lammps
