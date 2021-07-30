@@ -139,3 +139,5 @@ research_utils/lammps/dump/
 ss.txt
 
 log.lammps
+
+*.png
