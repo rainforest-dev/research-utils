@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "research-utils"
-version = "2021.04.19.1"
+version = "2021.04.19.2"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 sqlite-utils = "^3.6"
 pytorch-lightning = "^1.2.2"
 
