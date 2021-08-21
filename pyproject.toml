@@ -8,6 +8,7 @@ authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 python = "^3.7"
 sqlite-utils = "^3.6"
 pytorch-lightning = "^1.2.2"
+torch = "^1.9.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.5"
