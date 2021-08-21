@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "research-utils"
-version = "2021.08.21.1"
+version = "2021.08.21.2"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 
