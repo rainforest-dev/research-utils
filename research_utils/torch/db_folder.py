@@ -1,7 +1,7 @@
 from typing import Callable, List, Dict
 from torch.utils.data.dataset import Dataset
-from sqlite.helper import Helper, FieldType
-from sqlite.sql import SQLArgument, SQLArgumentFactory
+from research_utils.sqlite.helper import Helper, FieldType
+from research_utils.sqlite.sql import SQLArgument, SQLArgumentFactory
 
 class DBFolder(Dataset):
   def __init__(
