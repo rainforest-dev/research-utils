@@ -59,4 +59,4 @@ class Upper(OperatorSQLArgument):
 class SQLArgumentFactory:
   @classmethod
   def between(self, field, lower_bound, upper_bound):
-    return AND(Lower(field, lower_bound), Upper(field, upper_bound))
+    return AND(Lower(field, upper_bound), Upper(field, lower_bound))
