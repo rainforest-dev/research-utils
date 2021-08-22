@@ -33,5 +33,5 @@ class Helper:
     select = reduce(lambda field1, field2: f'{field1}, {field2}', fields) if len(fields) > 0 else '*'
     sql = argument.sql if argument is not None else None
     print(select, sql)
-    rows = self.__db[self.__table_name].rows_where(select=select)
+    rows = self.__db[self.__table_name].rows_where(sql, select=select)
     return list(rows)
