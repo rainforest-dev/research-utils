@@ -73,8 +73,11 @@ def logger(log_func: Callable[[int, Any], None]=None, level: Logging_Level=Loggi
     @functools.wraps(func)
     def inner(*args, **kwargs):
       items = func(*args, **kwargs)
-      for item in items.items() if isinstance(items, dict) else items:
-        log_func(*args, level=level.value, item=item if transform is None else transform(item), **kwargs)
+      try:
+        for item in items.items() if isinstance(items, dict) else items:
+          log_func(*args, level=level.value, item=item if transform is None else transform(item), **kwargs)
+      except:
+        log_func(*args, level=level.value, item=items if transform is None else transform(items), **kwargs)
       return items
     return inner
   return decorator

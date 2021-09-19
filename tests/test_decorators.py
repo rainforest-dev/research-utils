@@ -31,6 +31,16 @@ def test_ignore_unknown_kwargs():
   assert (keyword_only(1, y=3))
 
 
+def test_logging_item():
+  @config_logger(level=Logging_Level.DEBUG)
+  @logger(level=Logging_Level.WARNING)
+  def log_item():
+    return 1
+
+  result = log_item()
+  assert result == 1
+
+
 def test_logging_array():
   @config_logger(level=Logging_Level.DEBUG)
   @logger(level=Logging_Level.WARNING)
