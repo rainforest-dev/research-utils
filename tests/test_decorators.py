@@ -37,7 +37,8 @@ def test_logging_array():
   def log_array():
     return 1, 2, 3, 4
 
-  log_array()
+  result = log_array()
+  assert result == (1, 2, 3, 4)
 
 
 def test_logging_dict():
@@ -46,7 +47,8 @@ def test_logging_dict():
   def log_dict():
     return {'one': 1, 'two': 2}
 
-  log_dict()
+  result = log_dict()
+  assert result == {'one': 1, 'two': 2}
 
 
 class Logger():
