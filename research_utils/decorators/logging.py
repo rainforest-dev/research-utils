@@ -36,7 +36,7 @@ class CustomFormatter(logging.Formatter):
       formatter = logging.Formatter(log_fmt)
       return formatter.format(record)
 
-def log(level: int, item):
+def log(*args, level: int, item, **kwargs):
   level = Logging_Level(level)
   if level == Logging_Level.DEBUG:
     logging.debug(item)
