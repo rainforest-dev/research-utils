@@ -63,7 +63,7 @@ def config_logger(level: Logging_Level=Logging_Level.WARNING, format='[%(asctime
         handler.setLevel(level.value)
         handler.setFormatter(CustomFormatter())
         logger.addHandler(handler)
-      func(*args, **kwargs)
+      return func(*args, **kwargs)
     return inner
   return decorator
 
@@ -75,5 +75,6 @@ def logger(log_func: Callable[[int, Any], None]=None, level: Logging_Level=Loggi
       items = func(*args, **kwargs)
       for item in items.items() if isinstance(items, dict) else items:
         log_func(*args, level=level.value, item=item if transform is None else transform(item), **kwargs)
+      return items
     return inner
   return decorator
