@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "research-utils"
-version = "2021.08.21.5"
+version = "2021.09.18.1"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 
@@ -12,6 +12,7 @@ torchvision = "^0.8.2"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.5"
+pytest = "^6.2.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
