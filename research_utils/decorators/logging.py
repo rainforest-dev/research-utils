@@ -1,5 +1,5 @@
 import sys
-from typing import Callable
+from typing import Any, Callable
 import functools
 from enum import Enum
 import logging
@@ -36,10 +36,12 @@ class CustomFormatter(logging.Formatter):
       formatter = logging.Formatter(log_fmt)
       return formatter.format(record)
 
-def log(level: Logging_Level, item):
+def log(level: int, item):
+  level = Logging_Level(level)
   if level == Logging_Level.DEBUG:
     logging.debug(item)
   elif level == Logging_Level.INFO:
+    print(item)
     logging.info(item)
   elif level == Logging_Level.WARNING:
     logging.warning(item)
@@ -56,23 +58,22 @@ def config_logger(level: Logging_Level=Logging_Level.WARNING, format='[%(asctime
     def inner(*args, **kwargs):
       logger = logging.getLogger()
       logger.setLevel(level.value)
-      handler = logging.StreamHandler(sys.stdout)
-      handler.setLevel(level.value)
-      handler.setFormatter(CustomFormatter())
-      logger.addHandler(handler)
+      if len(logger.handlers) == 0:
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(level.value)
+        handler.setFormatter(CustomFormatter())
+        logger.addHandler(handler)
       func(*args, **kwargs)
     return inner
   return decorator
 
-def logger(level: Logging_Level=Logging_Level.DEBUG, transform: Callable=None):
+def logger(log_func: Callable[[int, Any], None]=None, level: Logging_Level=Logging_Level.DEBUG, transform: Callable=None):
+  log_func = log if log_func is None else log_func
   def decorator(func):
     @functools.wraps(func)
     def inner(*args, **kwargs):
       items = func(*args, **kwargs)
       for item in items.items() if isinstance(items, dict) else items:
-        if transform is not None:
-          log(level=level, item=transform(item))
-        else:
-          log(level=level, item=item)
+        log_func(*args, level=level.value, item=item if transform is None else transform(item), **kwargs)
     return inner
   return decorator

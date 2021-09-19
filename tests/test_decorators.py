@@ -1,3 +1,4 @@
+import logging
 from research_utils.decorators.logging import Logging_Level, config_logger, logger
 from research_utils.decorators.arguments import ignore_unknown_kwargs
 
@@ -30,16 +31,35 @@ def test_ignore_unknown_kwargs():
   assert (keyword_only(1, y=3))
 
 
-def test_logging():
+def test_logging_array():
   @config_logger(level=Logging_Level.DEBUG)
   @logger(level=Logging_Level.WARNING)
   def log_array():
     return 1, 2, 3, 4
 
+  log_array()
+
+
+def test_logging_dict():
   @config_logger(level=Logging_Level.INFO)
-  @logger(level=Logging_Level.ERROR, transform=lambda x: f'{x[0]}\t{x[1]}')
+  @logger(transform=lambda x: f'{x[0]}\t{x[1]}')
   def log_dict():
     return {'one': 1, 'two': 2}
 
-  log_array()
   log_dict()
+
+
+class Logger():
+  def __init__(self) -> None:
+    self.__logger = logging.getLogger(__name__)
+
+  @config_logger(level=Logging_Level.WARNING)
+  @logger(lambda self, level, item: self.__logger.log(level=level, msg=item),
+          level=Logging_Level.ERROR,
+          transform=lambda x: f'{x[0]}\t{x[1]}')
+  def test(self):
+    return {'one': 1, 'two': 2}
+
+
+def test_logging_with_class_logger():
+  Logger().test()
