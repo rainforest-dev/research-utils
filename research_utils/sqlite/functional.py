@@ -1,11 +1,11 @@
-from .typing.sql import FieldOption
-from .typing.operator import ConditionSQLArgument, OperatorSQLArgument
-from typing import Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 import logging
+from ..decorators.logging import logger
 from pathlib import Path
 import sqlite3
-from sqlite3 import Error, Connection
-from ..decorators.logging import logger
+from sqlite3 import Error, Connection, Cursor
+from .typing.sql import FieldOption
+from .typing.operator import ConditionSQLArgument, OperatorSQLArgument
 
 
 def create_db_if_not_exist(database) -> None:
@@ -87,6 +87,7 @@ def insert(conn: Connection, table_name: str, fields: Union[List[str], Tuple[str
 def query(conn: Connection,
           table_name: str,
           fields: Union[List[str], Tuple[str]] = None,
+          row_factory: Callable[[Cursor, Tuple], Any] = None,
           where: Union[OperatorSQLArgument, ConditionSQLArgument] = None) -> List:
   """Query All Rows from Custom Table
 
@@ -104,6 +105,10 @@ def query(conn: Connection,
   {f'WHERE {where.sql}' if where is not None else ''}
   """
   logging.info(sql)
+
+  if row_factory is not None:
+    conn.row_factory = row_factory
+
   try:
     cur = conn.cursor()
     cur.execute(sql)
