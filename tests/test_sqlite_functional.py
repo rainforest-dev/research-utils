@@ -6,6 +6,7 @@ from research_utils.decorators.logging import Logging_Level, config_logger
 from research_utils.sqlite.typing.sql import FieldType, NotNull, PrimaryKey
 from research_utils.sqlite.typing.operator import Lower
 from research_utils.sqlite.functional import create_connection, create_table, insert, query
+from research_utils.sqlite.row_factory import dict_factory
 
 table_name = 'test'
 fields = {
@@ -77,6 +78,7 @@ def test_query_where():
   rows = query(conn,
                table_name=table_name,
                fields=[key for key in fields.keys()],
+               row_factory=dict_factory,
                where=Lower('value', 0.5))
 
   assert rows is not None
