@@ -1,15 +1,5 @@
-from abc import abstractmethod
+from .sql import SQLArgument
 from functools import reduce
-
-
-class SQLArgument:
-  def __init__(self):
-    pass
-
-  @property
-  @abstractmethod
-  def sql(self):
-    return NotImplemented
 
 
 class OperatorSQLArgument(SQLArgument):
