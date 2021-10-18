@@ -4,7 +4,7 @@ import pytest
 import random
 from research_utils.decorators.logging import Logging_Level, config_logger
 from research_utils.sqlite.typing.sql import FieldType, NotNull, PrimaryKey
-from research_utils.sqlite.typing.operator import Lower
+from research_utils.sqlite.typing.operator import In, Lower, NotIn
 from research_utils.sqlite.functional import create_connection, create_table, insert, query
 from research_utils.sqlite.row_factory import dict_factory
 
@@ -82,6 +82,14 @@ def test_query_where():
                where=Lower('value', 0.5))
 
   assert rows is not None
+
+
+@pytest.mark.sqlite
+def test_operator_in():
+  sql = In('id', bound=[1, 3, 4])
+  assert sql.sql == 'id IN (1, 3, 4)'
+  sql = NotIn('id', bound={1, 5, 6})
+  assert sql.sql == 'id NOT IN (1, 5, 6)'
 
 
 import threading

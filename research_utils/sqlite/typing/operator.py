@@ -46,6 +46,16 @@ class Upper(OperatorSQLArgument):
     super().__init__(field, operator='>=', bound=bound)
 
 
+class In(OperatorSQLArgument):
+  def __init__(self, field, bound=None):
+    super().__init__(field, operator='IN', bound=tuple(bound))
+
+
+class NotIn(OperatorSQLArgument):
+  def __init__(self, field, bound=None):
+    super().__init__(field, operator='NOT IN', bound=tuple(bound))
+
+
 class SQLArgumentFactory:
   @classmethod
   def between(self, field, lower_bound, upper_bound):
