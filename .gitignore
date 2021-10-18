@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 tests/static/db.sqlite
+.DS_Store
+
+tests/static/db.sqlite
