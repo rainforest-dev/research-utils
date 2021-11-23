@@ -21,6 +21,9 @@ class FieldType(SQLArgument, Enum):
   BOOL = "INTEGER"
   STRING = "TEXT"
   BLOB = "BLOB"
+  
+  def __str__(self) -> str:
+    return self.value
 
 
 class FieldOption(SQLArgument):
