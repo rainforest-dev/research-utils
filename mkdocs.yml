@@ -1,0 +1,7 @@
+site_name: research-utils
+nav:
+  - Home: index.md
+  - Tools:
+      - MkDocs: tools/mkdocs.md
+plugins:
+  - include-markdown
