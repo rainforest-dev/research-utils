@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "research-utils"
-version = "2021.11.24.3"
+version = "2021.11.24.4"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
+readme = "README.md"
+homepage = "https://r08521610.github.io/research-utils/"
+repository = "https://github.com/r08521610/research-utils"
 
 [tool.poetry.dependencies]
 python = "^3.7"
