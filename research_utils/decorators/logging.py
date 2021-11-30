@@ -41,7 +41,6 @@ def log(*args, level: int, item, **kwargs):
   if level == Logging_Level.DEBUG:
     logging.debug(item)
   elif level == Logging_Level.INFO:
-    print(item)
     logging.info(item)
   elif level == Logging_Level.WARNING:
     logging.warning(item)

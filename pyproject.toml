@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "research-utils"
-version = "2021.11.24.2"
+version = "2021.11.24.3"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 
@@ -14,6 +14,7 @@ autopep8 = "^1.5.5"
 pytest = "^6.2.5"
 mkdocs = "^1.2.3"
 mkdocs-include-markdown-plugin = "^3.2.3"
+yapf = "^0.31.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
