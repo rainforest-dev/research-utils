@@ -1,5 +1,5 @@
 import logging
-from research_utils.decorators.logging import Logging_Level, config_logger, logger
+from research_utils.decorators.logging import Logging_Level, conditional_logger, config_logger, logger
 from research_utils.decorators.arguments import ignore_unknown_kwargs
 
 
@@ -75,3 +75,18 @@ class Logger():
 
 def test_logging_with_class_logger():
   Logger().test()
+
+
+def test_conditional_logger():
+  @config_logger(level=Logging_Level.INFO)
+  @conditional_logger(conditional=lambda items: isinstance(items, dict),
+                      level=Logging_Level.INFO,
+                      transform=lambda x: f'{x[0]}\t{x[1]}')
+  @conditional_logger(conditional=lambda items: isinstance(items, tuple), level=Logging_Level.INFO)
+  def _log(x, *args, **kwargs):
+    return x
+
+  _log({'one': 2, 'two': 1})
+  _log(('two', 1))
+  _log([1, 3, 4, 2])
+  _log(5)

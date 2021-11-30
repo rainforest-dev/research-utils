@@ -1,5 +1,5 @@
 import sys
-from typing import Any, Callable
+from typing import Any, Callable, Dict
 import functools
 from enum import Enum
 import logging
@@ -19,9 +19,9 @@ class Logging_Level(Enum):
   CRITICAL = logging.CRITICAL
 
 class CustomFormatter(logging.Formatter):
-  format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+  fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
 
-  def __init__(self, fmt: str = format, datefmt: str = None, style = '%') -> None:
+  def __init__(self, fmt: str = fmt, datefmt: str = None, style = '%') -> None:
       super().__init__(fmt=fmt, datefmt=datefmt, style=style)
       self.FORMATS = {
           logging.DEBUG: grey + fmt + reset,
@@ -66,7 +66,11 @@ def config_logger(level: Logging_Level=Logging_Level.WARNING, format='[%(asctime
     return inner
   return decorator
 
-def logger(log_func: Callable[[int, Any], None]=None, level: Logging_Level=Logging_Level.DEBUG, transform: Callable=None):
+def logger(
+  log_func: Callable[[int, Any], None]=None, 
+  level: Logging_Level=Logging_Level.DEBUG, 
+  transform: Callable=None
+):
   log_func = log if log_func is None else log_func
   def decorator(func):
     @functools.wraps(func)
@@ -80,3 +84,38 @@ def logger(log_func: Callable[[int, Any], None]=None, level: Logging_Level=Loggi
       return items
     return inner
   return decorator
+
+def conditional_logger(
+  conditional: Callable[[Any, Dict[str, Any]], bool] = lambda **kwargs: True, 
+  log_func: Callable[[tuple, Dict[str, Any]], None]=log, 
+  level: Logging_Level=Logging_Level.DEBUG, 
+  transform: Callable=None
+):
+  """conditional logger
+
+  Args:
+      conditional (Callable[[Any, Dict[str, Any]], bool], optional): only kwargs will be passed into. Defaults to lambda**kwargs:True.
+      log_func (Callable[[tuple, Dict[str, Any]], None], optional): Defaults to log.
+      level (Logging_Level, optional): Defaults to Logging_Level.DEBUG.
+      transform (Callable, optional): Defaults to None.
+
+  Returns:
+      (func) -> (*args, **kwargs) -> Any: return a decorator
+  """
+  log_func = log if log_func is None else log_func
+  def decorator(func):
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+      def _log_func(item: Any):
+        log_func(*args, level=level.value, item=item if transform is None else transform(item), **kwargs)
+      items = func(*args, **kwargs)
+      if conditional(items, **kwargs):
+        try:
+          for item in items.items() if isinstance(items, dict) else items:
+            _log_func(item)
+        except:
+          _log_func(items)
+      return items
+    return inner
+  return decorator
+
