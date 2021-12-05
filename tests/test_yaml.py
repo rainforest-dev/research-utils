@@ -8,15 +8,23 @@ from research_utils.utils import load_yaml
 
 @pytest.mark.yaml
 def test_load_yaml():
-  assert isinstance(load_yaml('static/db.yaml'), Dict)
+  assert isinstance(load_yaml('tests/static/db01.yaml'), Dict)
 
 
 @pytest.mark.yaml
 def test_get_fields():
-  data = load_yaml('static/db.yaml')
+  data = load_yaml('tests/static/db01.yaml')
   parse_fields(data['nacre'])
   parse_where(data['nacre'])
   assert (data['nacre']['where'].sql == 'density <= 1 AND density >= 0 AND total_area <= 0.25')
+
+
+@pytest.mark.yaml
+def test_get_fields_02():
+  data = load_yaml('tests/static/db02.yaml')
+  parse_fields(data['nacre'])
+  parse_where(data['nacre'])
+  assert (data['nacre']['where'].sql == 'density <= 1 AND density >= 0')
 
 
 @pytest.mark.argparse
@@ -30,7 +38,7 @@ def test_yaml_action_with_transform():
 
   parser = ArgumentParser()
   parser.add_argument('--yaml', action=YAMLAction, transform=transform)
-  args = parser.parse_args(['--yaml', 'static/db.yaml'])
+  args = parser.parse_args(['--yaml', 'tests/static/db01.yaml'])
   assert args.table_name == 'nacre'
   assert (args.fields is not None)
   assert (args.argument is not None)
@@ -41,5 +49,5 @@ def test_yaml_action_with_transform():
 def test_yaml_action():
   parser = ArgumentParser()
   parser.add_argument('--yaml', action=YAMLAction)
-  args = parser.parse_args(['--yaml', 'static/db.yaml'])
-  assert args.yaml == 'static/db.yaml'
+  args = parser.parse_args(['--yaml', 'static/db01.yaml'])
+  assert args.yaml == 'static/db01.yaml'

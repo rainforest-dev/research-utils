@@ -1,0 +1,17 @@
+nacre:
+  fields:
+    # TODO: options for primary key, ...
+    id: INTEGER
+    density: FLOAT
+    ultraStress: FLOAT
+    total_area: FLOAT
+    toughness_index: FLOAT
+    raw_128: STRING
+    raw_512: STRING
+  where:
+    AND:
+      - BETWEEN:
+          args:
+            - density
+            - 0
+            - 1

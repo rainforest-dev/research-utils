@@ -22,11 +22,14 @@ class ConditionSQLArgument(SQLArgument):
     super().__init__()
     self.__keyword = keyword
     self.__args = args
+    assert len(self.__args) > 0
 
   @property
   def sql(self):
     if self.__keyword is None:
       return
+    elif len(self.__args) == 1:
+      return self.__args[0].sql
     else:
       return reduce(lambda arg1, arg2: f'{arg1.sql} {self.__keyword} {arg2.sql}', self.__args)
 
