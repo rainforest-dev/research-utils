@@ -38,7 +38,7 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2.1.0
         with:
-          poetry-version: 1.1.
+          poetry-version: 1.1.12
       - name: Check pyproject.toml validity
         run: poetry check --no-interaction
       - name: Cache dependencies
