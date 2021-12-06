@@ -3,5 +3,6 @@ nav:
   - Home: index.md
   - Tools:
       - MkDocs: tools/mkdocs.md
+      - Git: tools/git.md
 plugins:
   - include-markdown
