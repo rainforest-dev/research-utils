@@ -37,9 +37,13 @@ jobs:
           key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry
       - name: Install poetry
         if: steps.cache-poetry.outputs.cache-hit != 'true'
-        uses: abatilo/actions-poetry@v2.1.0
-        with:
-          poetry-version: 1.1.12
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+      - name: Add Poetry to $PATH
+        run: |
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Get Poetry version
+        run: poetry --version
       - name: Check pyproject.toml validity
         run: poetry check --no-interaction
       - name: Cache dependencies
