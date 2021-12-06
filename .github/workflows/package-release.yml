@@ -1,0 +1,59 @@
+name: Create Release
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  autorelease:
+    name: Create Release
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Cache Poetry
+        id: cache-poetry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: poetry
+      - name: Install poetry
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        uses: abatilo/actions-poetry@v2.1.0
+        with:
+          poetry-version: 1.1.12
+      - name: Check pyproject.toml validity
+        run: poetry check --no-interaction
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/.venv
+          key: ${{ matrix.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: ${{ matrix.os }}-
+      - name: Install dependencies
+        if: steps.cache-dependencies.cache-hit != 'true'
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry install --no-interaction
+      - name: Run tests
+        run: poetry run pytest -v
+      - name: Build artifacts
+        run: poetry build
+      - name: Release Notes
+        run: git log $(git describe HEAD~ --tags --abbrev=0)..HEAD --pretty='format:* %h %s%n  * %an <%ae>' --no-merges >> ".github/RELEASE-TEMPLATE.md"
+      - name: Create Release Draft
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: ".github/RELEASE-TEMPLATE.md"
+          draft: true
+          files: |
+            dist/random_standup-${{env.PROJECT_VERSION}}-py3-none-any.whl
+            dist/random-standup-${{env.PROJECT_VERSION}}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
