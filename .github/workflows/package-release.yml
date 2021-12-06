@@ -16,17 +16,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: Cache Poetry
-        id: cache-poetry
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: poetry
       - name: Install poetry
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
-        uses: abatilo/actions-poetry@v2.1.0
+        uses: snok/install-poetry@v1
         with:
-          poetry-version: 1.1.12
+          virtualenvs-create: true
+          virtualenvs-in-project: true
       - name: Check pyproject.toml validity
         run: poetry check --no-interaction
       - name: Cache dependencies
