@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
-          key: ${{ matrix.os }}-poetry
+          key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('setup.py') }}
       - name: Install poetry
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         uses: abatilo/actions-poetry@v2.1.0
