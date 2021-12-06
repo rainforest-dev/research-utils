@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   release:
     types:
-      - publish
+      - published
 
 jobs:
   publish:
