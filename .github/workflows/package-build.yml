@@ -33,7 +33,7 @@ jobs:
         id: cache-poetry
         uses: actions/cache@v2
         with:
-          path: ~/.poetry
+          path: ~/.cache/pip
           key: ${{ matrix.os }}-poetry
       - name: Install poetry
         if: steps.cache-poetry.outputs.cache-hit != 'true'
