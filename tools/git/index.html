@@ -85,22 +85,27 @@
                     <div class="col-md-9" role="main">
 
 <p>Copied from https://gist.github.com/danielestevez/2044589</p>
-<p>1) Create a branch with the tag
+<pre><code class="language-bash"># 1) Create a branch with the tag
     git branch {tagname}-branch {tagname}
-    git checkout {tagname}-branch</p>
-<p>2) Include the fix manually if it's just a change .... 
+    git checkout {tagname}-branch
+
+# 2) Include the fix manually if it's just a change .... 
     git add .
-    git ci -m "Fix included"
+    git ci -m &quot;Fix included&quot;
     or cherry-pick the commit, whatever is easier
-    git cherry-pick  {num_commit}</p>
-<p>3) Delete and recreate the tag locally
+    git cherry-pick  {num_commit}
+
+# 3) Delete and recreate the tag locally
     git tag -d {tagname}
-    git tag {tagname}</p>
-<p>4) Delete and recreate the tag remotely
+    git tag {tagname}
+
+# 4) Delete and recreate the tag remotely
     git push origin :{tagname} // deletes original remote tag
-    git push origin {tagname} // creates new remote tag</p>
-<p>5)  Update local repository with the updated tag (suggestion by @wyattis)
-    git fetch --tags</p>
+    git push origin {tagname} // creates new remote tag
+
+# 5)  Update local repository with the updated tag (suggestion by @wyattis)
+    git fetch --tags
+</code></pre>
 <p>This is based on https://gist.github.com/739288 thanks to nickfloyd for it</p></div>
             </div>
         </div>
