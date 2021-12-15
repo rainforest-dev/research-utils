@@ -48,7 +48,6 @@ jobs:
           body_path: ".github/RELEASE-TEMPLATE.md"
           draft: true
           files: |
-            dist/random_standup-${{env.PROJECT_VERSION}}-py3-none-any.whl
-            dist/random-standup-${{env.PROJECT_VERSION}}.tar.gz
+            dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
