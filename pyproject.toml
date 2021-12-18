@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "research-utils"
-version = "0.0.1"
+version = "0.0.2"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 readme = "README.md"
@@ -22,7 +22,7 @@ yapf = "^0.31.0"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.0.1"
+version = "0.0.2"
 tag_format = "v$version"
 version_files = [
   "pyproject.toml:version",
