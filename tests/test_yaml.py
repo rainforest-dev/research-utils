@@ -16,7 +16,8 @@ def test_get_fields():
   data = load_yaml('tests/static/db01.yaml')
   parse_fields(data['nacre'])
   parse_where(data['nacre'])
-  assert (data['nacre']['where'].sql == 'density <= 1 AND density >= 0 AND total_area <= 0.25')
+  assert (
+      data['nacre']['where'].sql == 'density <= "1" AND density >= "0" AND total_area <= "0.25"')
 
 
 @pytest.mark.yaml
@@ -24,7 +25,7 @@ def test_get_fields_02():
   data = load_yaml('tests/static/db02.yaml')
   parse_fields(data['nacre'])
   parse_where(data['nacre'])
-  assert (data['nacre']['where'].sql == 'density <= 1 AND density >= 0')
+  assert (data['nacre']['where'].sql == 'density <= "1" AND density >= "0"')
 
 
 @pytest.mark.argparse
