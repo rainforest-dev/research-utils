@@ -4,8 +4,8 @@ import pytest
 import random
 from research_utils.decorators.logging import Logging_Level, config_logger
 from research_utils.sqlite.typing.sql import FieldType, NotNull, PrimaryKey
-from research_utils.sqlite.typing.operator import In, Lower, NotIn
-from research_utils.sqlite.functional import create_connection, create_table, insert, query
+from research_utils.sqlite.typing.operator import Equal, In, Lower, NotIn
+from research_utils.sqlite.functional import create_connection, create_table, delete_table, insert, query, update
 from research_utils.sqlite.row_factory import dict_factory
 
 table_name = 'test'
@@ -30,6 +30,12 @@ def test_db_memory():
   conn = create_connection()
 
   assert conn is not None
+
+
+@pytest.mark.sqlite
+def test_delete_table():
+  conn = create_connection('static/db.sqlite')
+  delete_table(conn, table_name=table_name)
 
 
 @pytest.mark.sqlite
@@ -85,11 +91,23 @@ def test_query_where():
 
 
 @pytest.mark.sqlite
+def test_update():
+  conn = create_connection('static/db.sqlite')
+  update(conn,
+         table_name=table_name,
+         data={
+             'name': 'Rainforest_updated',
+             'value': 'updated_value'
+         },
+         where=Equal('name', 'Rainforest'))
+
+
+@pytest.mark.sqlite
 def test_operator_in():
   sql = In('id', bound=[1, 3, 4])
-  assert sql.sql == 'id IN (1, 3, 4)'
+  assert sql.sql == 'id IN "(1, 3, 4)"'
   sql = NotIn('id', bound={1, 5, 6})
-  assert sql.sql == 'id NOT IN (1, 5, 6)'
+  assert sql.sql == 'id NOT IN "(1, 5, 6)"'
 
 
 import threading

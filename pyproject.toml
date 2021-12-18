@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "research-utils"
-version = "2021.11.24.5"
+version = "0.0.1"
 description = "some utils for my research"
 authors = ["Rainforest Cheng <r08521610@ntu.edu.tw>"]
 readme = "README.md"
@@ -19,6 +19,15 @@ mkdocs = "^1.2.3"
 mkdocs-include-markdown-plugin = "^3.2.3"
 yapf = "^0.31.0"
 
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.1"
+tag_format = "v$version"
+version_files = [
+  "pyproject.toml:version",
+  "research_utils/__version__.py",
+]
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

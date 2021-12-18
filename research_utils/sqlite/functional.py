@@ -1,5 +1,7 @@
 from typing import Any, Callable, Dict, List, Tuple, Union
 import logging
+
+from research_utils.sqlite.utils import dict_to_values_sql
 from ..decorators.logging import logger
 from pathlib import Path
 import sqlite3
@@ -53,6 +55,28 @@ def create_table(conn: Connection, table_name: str, fields: Dict[str, FieldOptio
   try:
     cur = conn.cursor()
     cur.execute(sql)
+  except Error as e:
+    logging.error(e)
+
+
+def delete_table(conn: Connection, table_name: str):
+  sql = f'DROP TABLE {table_name}'
+  logging.info(sql)
+  try:
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+  except Error as e:
+    logging.error(e)
+
+
+def clear_table(conn: Connection, table_name: str):
+  sql = f'TRUNCATE TABLE {table_name}'
+  logging.info(sql)
+  try:
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
   except Error as e:
     logging.error(e)
 
@@ -114,5 +138,37 @@ def query(conn: Connection,
     cur.execute(sql)
     rows = cur.fetchall()
     return rows
+  except Error as e:
+    logging.error(e)
+
+
+@logger()
+def update(conn: Connection,
+           table_name: str,
+           data: Dict[str, Any],
+           where: Union[OperatorSQLArgument, ConditionSQLArgument] = None):
+  """Update rows in custom table
+
+  Args:
+      conn (Connection): The Connection object
+      table_name (str): Name of table
+      data (Dict[str, Any]): dict of fields and values
+      where (Union[OperatorSQLArgument, ConditionSQLArgument], optional): Defaults to None.
+  """
+
+  if not data or not len(data):
+    # do nothing if data is None or no values to be updated
+    print(data)
+    pass
+  sql = f"""UPDATE {table_name}
+  SET {dict_to_values_sql(data)}
+  {f'WHERE {where.sql}' if where is not None else ''}
+  """
+  logging.info(sql)
+
+  try:
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
   except Error as e:
     logging.error(e)

@@ -14,7 +14,7 @@ class OperatorSQLArgument(SQLArgument):
     if self.__operator is None and self.__bound is not None:
       return
     else:
-      return f'{self.__field} {self.__operator} {self.__bound}'
+      return f'{self.__field} {self.__operator} "{self.__bound}"'
 
 
 class ConditionSQLArgument(SQLArgument):
@@ -37,6 +37,16 @@ class ConditionSQLArgument(SQLArgument):
 class AND(ConditionSQLArgument):
   def __init__(self, *args):
     super().__init__(*args, keyword='AND')
+
+
+class Equal(OperatorSQLArgument):
+  def __init__(self, field, bound):
+    super().__init__(field, operator='=', bound=bound)
+
+
+class NotEqual(OperatorSQLArgument):
+  def __init__(self, field, bound):
+    super().__init__(field, operator='<>', bound=bound)
 
 
 class Lower(OperatorSQLArgument):
