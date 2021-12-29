@@ -3,7 +3,7 @@ from typing import Dict
 import pytest
 from research_utils.argparse.actions.yaml import YAMLAction
 from research_utils.sqlite.yaml import parse_fields, parse_where
-from research_utils.utils import load_yaml
+from research_utils.utils.utils import load_yaml
 
 
 @pytest.mark.yaml

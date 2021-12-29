@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Dict, Sequence, Union
 from research_utils.sqlite.typing.sql import FieldType
-from research_utils.utils import str_to_class
+from research_utils.utils.utils import str_to_class
 
 
 class SQLArgumentEnum(Enum):
