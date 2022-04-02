@@ -872,7 +872,7 @@ torch = ["torch"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8, <4"
-content-hash = "65ced44cf278dd78739df472dbe5b4bbcdfeee7fc5aece777beae6e4199c6e86"
+content-hash = "1ba3999f36ed4941158a6e1eeab24de58c20a99e5fdfbb75477b13f920a4a7c1"
 
 [metadata.files]
 alembic = [
